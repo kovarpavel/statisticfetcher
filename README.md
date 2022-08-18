@@ -1,5 +1,7 @@
 # Statistic fetcher API
 This is simple implementation of given task to provide language statistics from org's repositories.
+To get response from localhost use: `curl --request GET --url http://localhost:8080/statistic`
+
 ### Build and run
 To build and run tests: `./gradlew clean build`
 To run application: `./gradlew bootRun`
