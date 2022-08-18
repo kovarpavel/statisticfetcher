@@ -7,14 +7,14 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
 
 @Service
-class GithubService(
+class GithubServiceImpl(
     private val client: WebClient
-) {
+): IGithubService {
     companion object {
         val GITHUB_API_BASE_URL = "https://api.github.com"
     }
 
-    fun getRepositoryList(): List<Repository> {
+    override fun getRepositoryList(): List<Repository> {
         val response = client
             .get()
             .uri("$GITHUB_API_BASE_URL/orgs/productboard/repos?per_page=100")
@@ -24,7 +24,7 @@ class GithubService(
         return Gson().fromJson(response, Array<Repository>::class.java).toList()
     }
 
-    fun getRepositoryLanguageData(repositoryName: String): Map<String, Double> = client
+    override fun getRepositoryLanguageData(repositoryName: String): Map<String, Double> = client
             .get()
             .uri("$GITHUB_API_BASE_URL/repos/productboard/$repositoryName/languages")
             .retrieve()

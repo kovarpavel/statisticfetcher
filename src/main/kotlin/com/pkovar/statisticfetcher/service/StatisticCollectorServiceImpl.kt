@@ -8,10 +8,10 @@ import java.math.RoundingMode
 import java.sql.Timestamp
 
 @Service
-class StatisticService(
-    private val githubService: GithubService,
+class StatisticCollectorServiceImpl(
+    private val githubService: GithubServiceImpl,
     private val languageStatsRepository: LanguageStatsRepository
-) {
+) : IStatisticCollectorService {
     private fun gatherData(): Map<String,Double> {
         val githubData = mutableMapOf<String,Double>()
 
@@ -21,17 +21,17 @@ class StatisticService(
                 if (githubData[k] == null) {
                     githubData[k] = v
                 } else {
-                    val amount:Double? = githubData[k]?.plus(v);
-                    githubData[k] = amount!!;
+                    val amount:Double? = githubData[k]?.plus(v)
+                    githubData[k] = amount!!
                 }
             }
         }
         return githubData
     }
 
-    private fun getPercentageLanguageData():Map<String, Double> {
+    override fun getPercentageLanguageData():Map<String, Double> {
         val githubData = gatherData()
-        val totalSize = githubData.values.sum();
+        val totalSize = githubData.values.sum()
         val languagePercentData = mutableMapOf<String, Double>()
         githubData.forEach { (k, v) ->
             languagePercentData[k] = ((1 / totalSize ) * v)
@@ -42,7 +42,7 @@ class StatisticService(
         return languagePercentData
     }
 
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 0 23 * * *")
     private fun saveLanguageData() {
         languageStatsRepository.save(
             LanguageStatsEntity(
@@ -51,10 +51,4 @@ class StatisticService(
             )
         )
     }
-
-    fun getLatestLanguageStats(): Map<String, Double> {
-        val record = languageStatsRepository.findFirstByOrderByLoadedAtDesc()
-        return record?.stats ?: mapOf<String,Double>()
-    }
-
 }

@@ -1,17 +1,15 @@
 package com.pkovar.statisticfetcher.controller
 
-import com.pkovar.statisticfetcher.service.StatisticService
+import com.pkovar.statisticfetcher.service.IStatisticProviderService
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class StatisticsController(
-    private val statisticService: StatisticService
-) {
-
+    private val statisticProviderService: IStatisticProviderService
+    )
+{
     @GetMapping("/statistic")
     fun getStatistics(): Map<String, Double> =
-        statisticService.getLatestLanguageStats()
-
+        statisticProviderService.getLatestLanguageStats()
 }
-
